@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "lib": ["es2019"],
+    "outDir": "dist",
+    "rootDir": "./src",
+    "removeComments": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["./src/**/*.ts", "./types/**/*.d.ts", "scripts/convert.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts", "dist", "test/**"]
+}

@@ -1,0 +1,14 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "cSpell.words": [
+  ],
+  "files.exclude": {
+    "**/dist": true,
+    "**/node_modules": true,
+    "**/.vscode": true,
+    "tsconfig.tsbuildinfo": true
+  },
+  "cSpell.enableFiletypes": ["!tsbuildinfo"]
+}
