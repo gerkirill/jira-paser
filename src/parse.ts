@@ -33,7 +33,7 @@ interface ParsedIssue {
   const ctx = await init();
   await login(ctx, USERNAME, PASSWORD);
   const ids = await getIssueIDs(ctx);
-  // console.log(ids);
+  // console.log(ids, ids.length);
   await downloadIssues(ctx, ids);
   await shutdown(ctx);
 })();
@@ -57,7 +57,26 @@ export async function login(ctx: Context, login: string, password: string) {
 export async function getIssueIDs(ctx: Context) {
   const page = ctx.page;
   await page.goto(BASE_URL + '/projects/' + PROJECT + '/issues?filter=myopenissues');
-  const ids = await page.locator('.issue-link-key').evaluateAll(elts => elts.map(e => e.innerText));
+
+  const ids: string[] = [];
+
+  while (true) {
+    // Collect IDs from current page
+    const pageIds = await page.locator('.issue-link-key').evaluateAll(elts => elts.map(e => e.innerText));
+    ids.push(...pageIds);
+
+    // Check for next page
+    const nextLink = page.locator('a:has-text("Next >>")');
+    const count = await nextLink.count();
+
+    if (count === 0) break; // No more pages
+
+    // Navigate to next page
+    await nextLink.click();
+    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('.issue-link-key'); // Wait for new issues to load
+  }
+
   return ids;
 }
 
@@ -77,7 +96,9 @@ export async function downloadIssues(ctx: Context, ids: string[]) {
     const issueMd = issueToMd(issue);
     // console.log(issueMd);
     poolIndex[idx] = false;
-    fs.writeFileSync(path.join(__dirname, '..', 'issues', id + '.md'), issueMd);
+    const fileName = id + '.md';
+    console.log(`Writing file ${fileName}`);
+    fs.writeFileSync(path.join(__dirname, '..', 'issues', fileName), issueMd);
   }, { concurrency: CONCURRENCY });
 
   await Promise.all(browserPool.map(p => p.close()));

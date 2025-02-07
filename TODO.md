@@ -1,0 +1,4 @@
+- [x] Add pagination suport
+- [ ] Generate index markdown file with titles and links
+- [ ] Maybe support advanced queries
+- [ ] Maybe hit API directly
